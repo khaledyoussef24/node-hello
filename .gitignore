@@ -2,6 +2,5 @@
 node_modules
 .git
 .vscode
-.github
 README.md
 *.md
