@@ -5,9 +5,11 @@ variable "region" {
 }
 
 variable "image_name" {
-  description = "Container image (e.g. ghcr.io/<OWNER>/<REPO>:<TAG>)"
+  description = "Docker image (e.g., docker.io/USERNAME/node-hello:TAG)"
   type        = string
+  default     = "docker.io/USERNAME/node-hello:latest"
 }
+
 
 variable "cpu" {
   description = "Fargate CPU units"
