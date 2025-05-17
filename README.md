@@ -137,3 +137,9 @@ kubectl get deployments,svc
 - AWS region (`us-west-2`) unless otherwise configured
 
 ---
+
+## Resources
+
+- Repository: [https://github.com/khaledyoussef24/node-hello](https://github.com/khaledyoussef24/node-hello)
+- Docker Hub: [https://hub.docker.com/r/khaledgx96/node-hello](https://hub.docker.com/r/khaledgx96/node-hello)
+- New Relic One: [https://one.newrelic.com](https://one.newrelic.com)
