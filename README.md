@@ -59,7 +59,7 @@ Automated workflow (`.github/workflows/ci.yml`) covers:
 ### Run Locally
 
 ```bash
-git clone <your-repo-link>
+git clone https://github.com/khaledyoussef24/node-hello.git
 cd node-hello
 
 # Build Docker image
@@ -76,8 +76,8 @@ docker run --rm -p 3000:3000 node-hello:local
 ```bash
 docker login
 
-docker tag node-hello:local <DOCKERHUB_USERNAME>/node-hello:latest
-docker push <DOCKERHUB_USERNAME>/node-hello:latest
+docker tag node-hello:local khaledgx96/node-hello:latest
+docker push khaledgx96/node-hello:latest
 ```
 
 ---
