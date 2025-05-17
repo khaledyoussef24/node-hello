@@ -1,98 +1,139 @@
+# Node-Hello DevOps Hiring Assignment
+
+This repository demonstrates a DevOps CI/CD pipeline setup for a simple Node.js "Hello World" application, including Docker containerization, GitHub Actions workflows, and deployment via Terraform.
+
+## Overview
+
+- Simple Node.js application serving HTTP on port `3000`
+- Docker containerization
+- GitHub Actions CI/CD pipeline
+- Deployment using Terraform (Local Kubernetes with Kind, AWS EKS)
+
 ---
-
-# Node-Hello DevOps Assignment
-
-This repository demonstrates a CI/CD pipeline setup for a Node.js "Hello World" application.
-
-## Project Overview
-
-* Forked from a provided Node.js "Hello World" repository.
-* Containerized using Docker.
-* CI/CD pipeline implemented using GitHub Actions.
-* Deployment using Terraform (Docker or AWS EKS).
 
 ## Prerequisites
 
-* GitHub Account
-* Docker & Docker Hub account
-* Terraform
-* Kubernetes (Kind) or AWS account (Free Tier)
+Ensure you have the following installed:
+
+- Git & GitHub account
+- Node.js & npm
+- Docker & Docker Hub account
+- Terraform (v1.0+)
+- Kubernetes CLI (`kubectl`)
+- Kind (for local Kubernetes) or AWS CLI (for AWS EKS)
+
+---
 
 ## Project Structure
 
 ```sh
 .
 ├── .github/workflows       # GitHub Actions CI/CD workflows
-├── terraform               # Terraform Infrastructure as Code files
-│   ├── aws                 # AWS EKS deployment Terraform configs
-│   └── k8s                 # Local Kubernetes deployment Terraform configs
-├── Dockerfile              # Dockerfile for Node.js application
+├── terraform               # Terraform configuration files
+│   ├── aws                 # AWS EKS deployment configs
+│   └── k8s                 # Local Kubernetes (Kind) deployment configs
+├── Dockerfile              # Dockerfile for the Node.js application
 ├── index.js                # Application entry point
-├── package.json            # Application dependencies
+└── package.json            # Dependencies & scripts
 ```
 
-## CI/CD Pipeline
+---
 
-* **Linting:** ESLint configured to ensure code quality.
-* **Docker Build:** Builds Docker image from the Dockerfile.
-* **Docker Push:** Pushes Docker image to Docker Hub or GitHub Container Registry.
+## CI/CD Pipeline (GitHub Actions)
 
-### Workflow Setup (GitHub Actions)
+Automated workflow (`.github/workflows/ci.yml`) covers:
 
-Ensure you have set GitHub secrets for:
+- **Linting:** Ensures code quality (`npm ci && npm run lint`)
+- **Building:** Docker image creation
+- **Pushing:** Docker image upload to Docker Hub
 
-* `DOCKERHUB_USERNAME`
-* `DOCKERHUB_TOKEN`
+**Required GitHub Secrets:**
 
-These are required to push the Docker image to Docker Hub.
+- `DOCKERHUB_USERNAME`
+- `DOCKERHUB_TOKEN`
 
-## Docker Usage
+---
 
-### Build and Run Locally
+## Docker Setup
 
-```sh
-docker build -t node-hello .
-docker run -p 8080:8080 node-hello
+### Run Locally
+
+```bash
+git clone <your-repo-link>
+cd node-hello
+
+# Build Docker image
+docker build -t node-hello:local .
+
+# Run Docker container
+docker run --rm -p 3000:3000 node-hello:local
+
+# Test by visiting: http://localhost:3000
 ```
 
 ### Push to Docker Hub
 
-```sh
+```bash
 docker login
-docker tag node-hello YOUR_DOCKERHUB_USERNAME/node-hello:latest
-docker push YOUR_DOCKERHUB_USERNAME/node-hello:latest
+
+docker tag node-hello:local <DOCKERHUB_USERNAME>/node-hello:latest
+docker push <DOCKERHUB_USERNAME>/node-hello:latest
 ```
+
+---
 
 ## Terraform Deployment
 
-### Option 1: Local Kubernetes Deployment (Kind)
+### Option 1: Local Kubernetes with Kind
 
-Navigate to local Kubernetes Terraform configuration:
+Navigate to Terraform local Kubernetes configuration:
 
-```sh
+```bash
 cd terraform/k8s
 terraform init
 terraform apply
 ```
 
-### Option 2: AWS EKS Deployment (Free Tier)
+This automatically:
 
-Navigate to AWS Terraform configuration:
+- Creates a local Kubernetes cluster (`kind`)
+- Deploys the application container into the cluster
 
-```sh
+Verify deployment:
+
+```bash
+kubectl get pods,svc
+```
+
+### Option 2: AWS EKS Deployment
+
+Navigate to Terraform AWS configuration:
+
+```bash
 cd terraform/aws
 terraform init
 terraform apply
 ```
 
-Ensure AWS credentials (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`) are configured via the AWS CLI or environment variables.
+This automatically:
 
-## Assumptions & Notes
+- Sets up AWS infrastructure (EKS, VPC, Node Groups)
+- Deploys application container to the EKS cluster
 
-* Assumes familiarity with Docker, Terraform, and basic CI/CD concepts.
-* Terraform configurations provided assume default setups.
-* Docker Hub used as the primary registry, replace if using other providers.
-* Local Kubernetes (Kind) or AWS Free Tier recommended for free resource utilization.
-* Monitoring and logging setup (e.g., New Relic) went throught it but didnot work .
+Configure `kubectl`:
+
+```bash
+aws eks update-kubeconfig --region <AWS_REGION> --name <CLUSTER_NAME>
+
+kubectl get deployments,svc
+```
+
+---
+
+## Assumptions
+
+- Docker Hub as container registry
+- Default Kubernetes namespace (`default`)
+- AWS region (`us-west-2`) unless otherwise configured
 
 ---
